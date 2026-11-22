@@ -1,0 +1,57 @@
+name: Idea
+description: Propose a product improvement or roadmap item.
+title: "[Idea]: "
+labels:
+  - type: idea
+  - status: proposed
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Share a product idea. It will be discussed before any roadmap commitment or schedule.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem should this solve?
+      description: Describe the situation and who is affected.
+      placeholder: I need to...
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: What should happen?
+      description: Describe the expected user-visible result.
+    validations:
+      required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options:
+        - macOS
+        - Windows
+        - Linux
+        - Android (roadmap, no target date)
+        - iOS (roadmap, no target date)
+        - Platform-independent
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Product area
+      options:
+        - Converter
+        - Virtual printer
+        - Desktop app
+        - Installer and updates
+        - Documentation
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: examples
+    attributes:
+      label: Example or additional context
+      description: Use anonymized examples only. Do not attach private documents.
