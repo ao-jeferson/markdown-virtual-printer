@@ -5,11 +5,12 @@ Issues e pull requests são bem-vindos. A prioridade atual é um conversor previ
 ## Fluxo
 
 1. Abra ou encontre uma Issue para discutir a mudança.
-2. Faça fork do repositório público e crie uma branch a partir de `main`.
-3. Envie um pull request para `main` com contexto, comportamento esperado e limitações.
-4. Aguarde revisão; mudanças podem receber pedidos de ajuste antes do merge.
+2. Faça fork do repositório público.
+3. Para trabalho comum, crie sua branch a partir de `develop` e envie PR para `develop`.
+4. Para correções urgentes em uma versão publicada, crie `hotfix/<assunto>` a partir de `main` e envie PR para `main`.
+5. Aguarde revisão; mudanças podem receber pedidos de ajuste antes do merge.
 
-Veja a [estratégia de branches](docs/branch-strategy.md) e o [roadmap](ROADMAP.md).
+Veja a [estratégia Gitflow](docs/branch-strategy.md) e o [roadmap](ROADMAP.md).
 
 ## Pull requests
 
