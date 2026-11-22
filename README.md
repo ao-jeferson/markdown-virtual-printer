@@ -1,51 +1,23 @@
-# mdprint
+# Markdown Virtual Printer
 
-**Imprima para Markdown.** Projeto comunitário para converter documentos em Markdown estruturado e, mais adiante, oferecer uma impressora virtual nativa para macOS, Linux e Windows.
+**Print to Markdown from the native print dialog.**
 
-> Estado: protótipo inicial do conversor. A integração com a fila de impressão ainda não foi implementada.
+An open source virtual printer designed to appear alongside physical printers in the operating system print dialog. Applications submit print jobs through the native system pipeline; the printer prepares a Markdown document and lets the user save it.
 
-## Objetivos
+Development order: macOS, Windows, Linux. Android and iOS are roadmap items without target dates.
 
-- Converter HTML, texto simples e PDF para Markdown, preservando a estrutura que a origem permitir.
-- Oferecer interface para escolher destino e nome do arquivo.
-- Aplicar modelos de relatório a respostas de chat.
-- Integrar impressão virtual, começando pelo macOS.
-- Documentar limitações de conversão e formatação inferida.
+This project is in early development. The shared Rust core defines the document model and Markdown output boundary. Native printer integration, interface, and installer are implemented per operating system. The product is the virtual printer; the core is not a standalone converter application.
 
-## Conversor inicial
+## Architecture
 
-Requer Python 3.10 ou mais recente. PDF requer `pdftotext` (Poppler). HTML usa `markdownify` quando instalado.
+- Shared Rust core: print-job document model and Markdown serialization.
+- Native OS adapter: registers and handles the printer through the system print pipeline.
+- Native UI and installer: use platform conventions for save flow and installation.
 
-```sh
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install -e '.[html]'
-mdprint arquivo.html -o saida.md
-mdprint documento.pdf -o documento.md
-mdprint notas.txt -o notas.md
-```
+## Community
 
-Relatório a partir de texto ou Markdown de uma conversa:
+Contributions are welcome through pull requests. See [CONTRIBUTING.md](CONTRIBUTING.md), [ROADMAP.md](ROADMAP.md), and [docs/BRANCHING.md](docs/BRANCHING.md).
 
-```sh
-mdprint resposta.txt --template report -o relatorio.md --title "Resumo da conversa"
-```
+[Português (Brasil)](README.pt-BR.md) · [Architecture](docs/ARCHITECTURE.md) · [Release process](docs/RELEASING.md)
 
-A versão atual não instala impressoras nem altera configurações do sistema.
-
-## Qualidade e limites
-
-Markdown descreve conteúdo e estrutura, não o layout exato da página. HTML semântico pode manter títulos, listas, links, tabelas e código. PDF contém principalmente texto posicionado; a conversão preserva a ordem textual disponível, mas não recupera com confiabilidade estilos, colunas, imagens ou semântica ausente. PDFs digitalizados exigem OCR, ainda não incluído.
-
-## Desenvolvimento
-
-```sh
-python -m pip install -e '.[dev,html]'
-python -m mdprint --help
-```
-
-Consulte [arquitetura](docs/architecture.md), [roadmap](ROADMAP.md), [estratégia de branches](docs/branch-strategy.md), [contribuições](CONTRIBUTING.md) e [releases](docs/releases.md).
-
-## Comunidade e licença
-
-Forks e pull requests estão abertos. PRs são revisados antes de entrar em `main`; veja [CONTRIBUTING.md](CONTRIBUTING.md). A licença MIT permite usar, modificar e distribuir o software, inclusive comercialmente, mantendo os avisos de copyright e licença. Veja [LICENSE](LICENSE).
+MIT License. See [LICENSE](LICENSE).
