@@ -1,38 +1,45 @@
 # Roadmap
 
-As etapas avançam conforme os critérios de qualidade e suporte forem atendidos. Não há datas prometidas enquanto os formatos e a experiência ainda estão em validação.
+This roadmap describes product outcomes, not a development diary. Order is intentional; there are no promised dates.
 
-## 1. Núcleo de conversão — em andamento
+[Português (Brasil)](ROADMAP.pt-BR.md)
 
-- [x] CLI para HTML, texto/Markdown e PDF via `pdftotext`.
-- [x] Modelo simples de relatório.
-- [ ] Melhorar tabelas, imagens, links e blocos de código em HTML.
-- [ ] Relatar perdas e confiança por conversão.
-- [ ] Reunir amostras anonimizadas para avaliar diferentes documentos.
+## 1. Shared Rust core
 
-## 2. Aplicativo macOS
+- [ ] Define the canonical document model and conversion interfaces.
+- [ ] Convert HTML and plain text into structured Markdown.
+- [ ] Add PDF and print-job adapters with explicit conversion warnings.
+- [ ] Add report templates for chat responses and other structured content.
+- [ ] Package the core without requiring a Python installation or separate Python runtime.
 
-- [ ] Interface para selecionar arquivo, formato, destino e nome.
-- [ ] Pré-visualização do Markdown antes de salvar.
-- [ ] Empacotamento e instalação sem alterar a fila de impressão.
+## 2. macOS
 
-## 3. Imprimir para Markdown no macOS
+- [ ] Build the native desktop helper and save dialog.
+- [ ] Register a virtual printer through a supported macOS printing path.
+- [ ] Pass print jobs safely from the printing service to the user-session app.
+- [ ] Provide a signed installer and a clean uninstall path.
+- [ ] Validate jobs from representative applications and document conversion limits.
 
-- [ ] Provar o fluxo com CUPS e aplicativos de origem diferentes.
-- [ ] Encaminhar o conteúdo recebido ao auxiliar de desktop para escolha do destino.
-- [ ] Documentar limites da semântica recebida por aplicativo.
+## 3. Windows
+
+- [ ] Implement the virtual printer with Microsoft's supported Print Support App architecture.
+- [ ] Connect the Windows print workflow to the shared Rust core.
+- [ ] Package and install through the supported Windows application mechanism.
+- [ ] Validate the native print dialog, save flow, updates, and removal.
 
 ## 4. Linux
 
-- [ ] Compatibilidade CUPS em distribuições selecionadas.
-- [ ] Empacotamento e configuração reversível da fila.
+- [ ] Implement CUPS integration and a desktop save helper.
+- [ ] Select initial distributions and desktop environments to support.
+- [ ] Package installation and removal without leaving a broken print queue.
 
-## 5. Windows
+## 5. Android and iOS — no target date
 
-- [ ] Avaliar a arquitetura atual de impressora virtual.
-- [ ] Implementar integração após estabilizar o formato intermediário.
+- [ ] Revisit feasibility after desktop workflows and the shared core are stable.
+- [ ] Choose platform-specific print integration only after confirming OS capabilities and user demand.
 
-## 6. Releases e comunidade
+## 6. Release readiness
 
-- [ ] Automatizar builds assináveis para tags de release.
-- [ ] Definir critérios de suporte e compatibilidade.
+- [ ] Publish signed, self-contained platform installers.
+- [ ] Document supported OS versions, permissions, upgrades, and removal.
+- [ ] Automate release builds and provide checksums.
