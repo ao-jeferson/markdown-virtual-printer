@@ -1,17 +1,17 @@
 changelog:
   categories:
-    - title: Funcionalidades
+    - title: Features
       labels:
         - enhancement
         - feature
-    - title: Correções
+    - title: Fixes
       labels:
         - bug
         - fix
-    - title: Documentação e manutenção
+    - title: Documentation and maintenance
       labels:
         - documentation
         - chore
-    - title: Outras mudanças
+    - title: Other changes
       labels:
         - "*"
