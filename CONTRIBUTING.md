@@ -1,29 +1,36 @@
-# Contribuindo
+# Contributing
 
-Issues e pull requests são bem-vindos. A prioridade atual é um conversor previsível que preserve a estrutura disponível e explique claramente as perdas.
+Ideas and pull requests are welcome. The current priority is a dependable native virtual printer that saves print jobs as Markdown.
 
-## Fluxo
+[Português (Brasil)](CONTRIBUTING.pt-BR.md)
 
-1. Abra ou encontre uma Issue para discutir a mudança.
-2. Faça fork do repositório público.
-3. Para trabalho comum, crie sua branch a partir de `develop` e envie PR para `develop`.
-4. Para correções urgentes em uma versão publicada, crie `hotfix/<assunto>` a partir de `main` e envie PR para `main`.
-5. Aguarde revisão; mudanças podem receber pedidos de ajuste antes do merge.
+## Submit an idea
 
-Veja a [estratégia Gitflow](docs/branch-strategy.md) e o [roadmap](ROADMAP.md).
+1. Open an Issue with the **Idea** template, in English or Portuguese.
+2. Add the English labels type: idea and status: proposed. Add one platform label and one area label when known.
+3. Maintainers discuss scope and decide whether it belongs on the roadmap. A proposed idea is not a promise or schedule.
 
-## Pull requests
+## Submit code
 
-- Mantenha cada PR focado e descreva o problema e a solução observável.
-- Mantenha conversão offline; não envie documentos para serviços externos.
-- Atualize a documentação para novos formatos, dependências ou perdas conhecidas.
-- Inclua exemplos pequenos e não confidenciais quando acrescentar um formato.
-- Não inclua dados pessoais, documentos privados, credenciais ou arquivos de usuários.
+1. Fork the public repository.
+2. For normal work, create a feature, fix, docs, or chore branch from develop.
+3. Open a pull request to develop. For an urgent production fix, use hotfix/<topic> from main and target main.
+4. Wait for review and address requested changes before merge.
 
-## Relatos
+See the [Gitflow branch strategy](docs/branch-strategy.md) and [roadmap](ROADMAP.md).
 
-Informe sistema operacional, versão do Python, formato e um exemplo mínimo anonimizado. Nunca anexe conteúdo confidencial a uma Issue pública.
+## Pull request guidance
 
-## Licença
+- Keep each pull request focused and explain the user-visible effect.
+- Keep document conversion local; do not send print jobs to external services.
+- Update English documentation and its Portuguese translation when behavior or supported platforms change.
+- Include small, anonymized examples when adding a format.
+- Never include private documents, personal data, credentials, or user files.
 
-Ao enviar uma contribuição intencionalmente para inclusão, você concorda que ela seja distribuída sob a licença MIT deste repositório.
+## Reports
+
+Include the operating system, version, input format, and a minimal anonymized example. Do not attach confidential documents to public Issues.
+
+## License
+
+By intentionally submitting a contribution for inclusion, you agree that it may be distributed under this repository's MIT License.
