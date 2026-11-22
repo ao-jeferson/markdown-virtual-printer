@@ -1,60 +1,58 @@
-# Estratégia Gitflow
+# Gitflow Branch Strategy
 
-## Branches permanentes
+## Permanent branches
 
-- `main`: código pronto para release. Atualizações somente por pull request.
-- `develop`: integração da próxima versão. Atualizações somente por pull request.
+- **main** contains release-ready code. Releases are tagged from this branch.
+- **develop** integrates changes for the next release.
 
-Ambas devem exigir PR e revisão nas regras do repositório. Não faça push direto, mesmo como mantenedor.
+Configure GitHub rulesets so both branches require pull requests, dismiss stale approvals, require conversations to be resolved, and block force pushes and deletion. Documentation alone does not enforce these settings.
 
-## Branches temporárias
+## Temporary branches
 
-Crie branches a partir da base indicada e apague-as após o merge:
+Create work branches from the base shown below. Delete them after merging.
 
-| Prefixo | Criada a partir de | PR de destino | Uso |
+| Prefix | Create from | PR target | Purpose |
 |---|---|---|---|
-| `feature/<assunto>` | `develop` | `develop` | Funcionalidade |
-| `fix/<assunto>` | `develop` | `develop` | Correção comum |
-| `docs/<assunto>` | `develop` | `develop` | Documentação |
-| `chore/<assunto>` | `develop` | `develop` | Manutenção |
-| `release/<versão>` | `develop` | `main` | Preparar uma versão |
-| `hotfix/<assunto>` | `main` | `main` | Correção urgente em produção |
+| feature/<topic> | develop | develop | New functionality |
+| fix/<topic> | develop | develop | Normal bug fixes |
+| docs/<topic> | develop | develop | Documentation |
+| chore/<topic> | develop | develop | Maintenance and automation |
+| release/<version> | develop | main | Stabilize a release |
+| hotfix/<topic> | main | main | Urgent production fix |
 
-Exemplos: `feature/html-tables`, `release/0.2.0`, `hotfix/pdf-crash`.
+Examples: feature/html-tables, release/0.2.0, hotfix/pdf-crash.
 
-Branches `feature/*`, `fix/*`, `docs/*` e `chore/*` não são permanentes; elas entram em `develop`. Não crie branches vazias apenas para representar prefixos.
+Feature, fix, docs, and chore branches are temporary; do not create empty branches just to reserve a prefix.
 
-## Fluxos
+## Start a feature
 
-### Funcionalidade ou correção normal
+1. Fetch and switch to develop.
+2. Create a branch such as feature/html-tables from develop.
+3. Commit the focused change and push the feature branch.
+4. Open a pull request from the feature branch to develop.
+5. Address review feedback; merge by squash after approval and resolved conversations.
+6. Delete the feature branch after merge.
 
-1. Atualize sua cópia de `develop`.
-2. Crie uma branch temporária a partir de `develop`.
-3. Abra PR para `develop), aguarde revisão e resolva as conversas.
-4. Faça squash merge e apague a branch temporária.
+## Release flow
 
-### Release
+1. Create release/X.Y.Z from develop.
+2. Update version, changelog, documentation, and release artifacts on the release branch.
+3. Open a pull request from release/X.Y.Z to main; merge after review.
+4. Tag the resulting main commit as vX.Y.Z and publish the release.
+5. Open a pull request to bring release-only changes back into develop.
 
-1. Crie `release/X.Y.Z` a partir de `develop`.
-2. Atualize versão, changelog, documentação e artefatos nessa branch.
-3. Abra PR de `release/X.Y.Z` para `main`; após revisão, faça squash merge.
-4. Marque a release com a tag anotada `vX.Y.Z) em `main`.
-5. Abra PR para integrar os ajustes finais da release de volta em `develop`.
+## Hotfix flow
 
-### Hotfix
+1. Create hotfix/<topic> from main.
+2. Fix the production issue and open a pull request to main.
+3. Tag and publish the corrective release.
+4. Open a follow-up pull request to bring the fix into develop.
 
-1. Crie `hotfix/<assunto>` a partir de `main`.
-2. Corrija e abra PR para `main).
-3. Após o merge e a release corretiva, abra PR para levar a mesma correção a `develop`.
+## Review and merge
 
-## Revisão e proteção
+- The author cannot approve their own pull request. Request an independent reviewer when available.
+- New commits should invalidate previous approvals; resolve all review conversations before merging.
+- Use squash merges to keep permanent branch history concise.
+- GitHub rulesets enforce protected destination branches. GitHub does not natively enforce every source-prefix-to-target pairing; review that convention in each pull request.
 
-- Um PR não pode ser aprovado pelo próprio autor. Quando houver outro revisor disponível, exija uma aprovação.
-- Novos commits invalidam aprovações anteriores; resolva todas as conversas antes do merge.
-- Use squash merge para manter o histórico das branches permanentes legível.
-- `main` e `develop` não aceitam commits ou force pushes diretos.
-- Proteção de branch é aplicada por rulesets do GitHub. Os prefixos e bases dos PRs são convenções revisadas pelos mantenedores; regras nativas protegem as branches de destino, mas não impõem sozinhas qual prefixo de origem cada PR deve usar.
-
-## Releases
-
-Versões usam tags anotadas `vMAJOR.MINOR.PATCH`. Consulte [processo de releases](releases.md) para changelog, notas e artefatos.
+See [contributing](../CONTRIBUTING.md) and [release process](releases.md).
