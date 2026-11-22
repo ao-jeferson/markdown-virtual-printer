@@ -5,11 +5,11 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "mdprint"
 version = "0.1.0"
-description = "Convert documents and print jobs into structured Markdown"
+description = "Experimental converter prototype for a future native Markdown virtual printer"
 readme = "README.md"
 requires-python = ">=3.10"
 license = {file = "LICENSE"}
-authors = [{name = "mdprint contributors"}]
+authors = [{name = "Markdown Virtual Printer contributors"}]
 dependencies = []
 
 [project.optional-dependencies]
