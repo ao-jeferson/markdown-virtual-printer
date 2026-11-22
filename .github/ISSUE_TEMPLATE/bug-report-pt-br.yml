@@ -1,0 +1,42 @@
+name: Relato de problema
+description: Relate um problema reproduzível sem compartilhar documentos privados.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: textarea
+    id: expected
+    attributes:
+      label: O que você esperava?
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: O que aconteceu?
+    validations:
+      required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Plataforma
+      options:
+        - macOS
+        - Windows
+        - Linux
+        - Android
+        - iOS
+        - Outra
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Etapas para reproduzir
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Exemplo mínimo anonimizado e versão
+      description: Nunca anexe documentos privados, dados pessoais ou credenciais.
