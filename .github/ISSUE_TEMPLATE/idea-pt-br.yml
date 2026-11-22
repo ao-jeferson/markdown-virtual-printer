@@ -1,0 +1,57 @@
+name: Ideia
+description: Sugira uma melhoria do produto ou um item para o roadmap.
+title: "[Ideia]: "
+labels:
+  - type: idea
+  - status: proposed
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Descreva uma ideia de produto. Ela será discutida antes de qualquer compromisso ou prazo no roadmap.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Que problema deve ser resolvido?
+      description: Descreva a situação e quem é afetado.
+      placeholder: Preciso...
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: O que deveria acontecer?
+      description: Descreva o resultado esperado para quem usa o produto.
+    validations:
+      required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Plataforma
+      options:
+        - macOS
+        - Windows
+        - Linux
+        - Android (no roadmap, sem previsão)
+        - iOS (no roadmap, sem previsão)
+        - Independente de plataforma
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Área do produto
+      options:
+        - Conversor
+        - Impressora virtual
+        - Aplicativo de desktop
+        - Instalador e atualizações
+        - Documentação
+        - Outra
+    validations:
+      required: true
+  - type: textarea
+    id: examples
+    attributes:
+      label: Exemplo ou contexto adicional
+      description: Use exemplos anonimizados. Não anexe documentos privados.
