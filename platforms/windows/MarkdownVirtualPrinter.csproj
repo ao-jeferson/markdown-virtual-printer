@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <Import Project="$(MSBuildExtensionsPath)/$(MSBuildToolsVersion)/Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)/$(MSBuildToolsVersion)/Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
@@ -23,13 +23,13 @@
     <ApplicationDefinition Include="App.xaml"><Generator>MSBuild:Compile</Generator></ApplicationDefinition>
     <Compile Include="App.xaml.cs"><DependentUpon>App.xaml</DependentUpon></Compile>
     <Compile Include="PrintWorkflowTask.cs" />
-    <Content Include="Package.appxmanifest" />
-    <Content Include="Config\PrintDeviceCapabilities.xml" />
-    <Content Include="Config\PrintDeviceResources.xml" />
-    <Content Include="Assets\StoreLogo.png" />
-    <Content Include="Assets\Square150x150Logo.png" />
-    <Content Include="Assets\Square44x44Logo.png" />
-    <Content Include="..\..\target\release\printer_core.dll">
+    <AppxManifest Include="Package.appxmanifest" />
+    <Content Include="Config/PrintDeviceCapabilities.xml" />
+    <Content Include="Config/PrintDeviceResources.xml" />
+    <Content Include="Assets/StoreLogo.png" />
+    <Content Include="Assets/Square150x150Logo.png" />
+    <Content Include="Assets/Square44x44Logo.png" />
+    <Content Include="../../target/release/printer_core.dll">
       <Link>printer_core.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -37,5 +37,5 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.2.14" />
   </ItemGroup>
-  <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)/Microsoft/WindowsXaml/v$(VisualStudioVersion)/Microsoft.Windows.UI.Xaml.CSharp.targets" />
 </Project>
