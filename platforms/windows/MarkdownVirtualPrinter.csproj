@@ -34,6 +34,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.2.14" />
     <PackageReference Include="Microsoft.NETCore.Platforms" Version="2.1.0" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="All" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)/Microsoft/WindowsXaml/v$(VisualStudioVersion)/Microsoft.Windows.UI.Xaml.CSharp.targets" />
 </Project>
