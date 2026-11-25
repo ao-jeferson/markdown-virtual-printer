@@ -4,3 +4,7 @@ Thumbs.db
 .vscode/
 .idea/
 *.swp
+platforms/windows/bin/
+platforms/windows/obj/
+platforms/windows/AppPackages/
+platforms/windows/Packages/

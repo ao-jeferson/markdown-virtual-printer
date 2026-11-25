@@ -5,5 +5,26 @@ edition = "2021"
 license = "MIT"
 description = "Shared document model for Markdown Virtual Printer"
 
+[dependencies]
+pdf-extract = "0.12.1"
+rfd = { version = "0.15.4", optional = true }
+libc = "0.2"
+
+[features]
+default = []
+desktop-ui = ["dep:rfd"]
+unix-printer = []
+
 [lib]
+crate-type = ["rlib", "cdylib", "staticlib"]
 path = "src/lib.rs"
+
+[[bin]]
+name = "mdvp-agent"
+path = "src/bin/agent.rs"
+required-features = ["desktop-ui", "unix-printer"]
+
+[[bin]]
+name = "mdvp-cups-backend"
+path = "src/bin/cups_backend.rs"
+required-features = ["unix-printer"]

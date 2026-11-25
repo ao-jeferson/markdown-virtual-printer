@@ -1,26 +1,24 @@
-# Arquitetura e formatos
+# Architecture
 
-## Princípio
-
-O mdprint separa conversão de documento, apresentação e integração com a fila de impressão. O núcleo recebe um formato identificável, produz Markdown UTF-8 e mantém o processamento local.
+The product is a virtual printer exposed by each operating system. Its native adapter receives a spooled print job, calls the shared Rust core, and asks the user where to save the `.md` file.
 
 ```text
-HTML / texto / PDF -> adaptador de formato -> Markdown -> modelo opcional -> arquivo .md
-                                            ^
-             no futuro: fila de impressão -> auxiliar de desktop -> diálogo salvar
+Application -> native print queue -> OS adapter -> Rust core -> native Save dialog -> .md
 ```
 
-## Conversão
+## Shared core
 
-- **HTML:** usa `markdownify` como dependência opcional. Elementos sem equivalência em Markdown podem virar texto ou ser simplificados.
-- **TXT/MD:** normaliza quebras de linha e espaços; conteúdo Markdown existente é preservado.
-- **PDF:** usa `pdftotext -layout` para extrair texto na ordem/layout aproximado. O PDF raramente contém semântica de títulos, listas e tabelas que possa ser recuperada com certeza. PDF digitalizado exige OCR, fora do escopo inicial.
-- **Relatório:** modelo inicial coloca título e data antes do conteúdo. Modelos futuros devem ser configuráveis e não presumir que texto de chat tenha metadados ausentes.
+The core currently accepts UTF-8 plain text, Markdown, and PDF. PDF text extraction is local and bounded to 256 MiB. It does not write files or make network requests. Its C ABI is intended for platform front ends.
 
-## Segurança e privacidade
+The native **Keep formatting** checkbox is enabled by default. Checked, the core organizes headings, lists, quotes, and paragraphs; unchecked, it retains extracted text without report formatting. The print pipeline may flatten styling or structure before the core receives the job; the core cannot recreate information that is no longer present. Scanned PDFs require OCR, which remains on the roadmap.
 
-Conversão local por padrão. Arquivos não devem ser enviados a terceiros. Adaptadores devem limitar uso de memória/CPU e tratar entrada malformada. Nunca execute conteúdo extraído como código.
+## Native adapters
 
-## Integração de impressão
+- macOS and Linux: CUPS receives print jobs. A per-user helper is needed for the native save dialog because CUPS backends run outside the logged-in desktop session.
+- Windows: the supported direction is a Print Support virtual printer packaged as MSIX; its workflow must call the Rust core and use the OS save destination.
 
-Uma fila de impressão costuma transmitir uma representação destinada à aparência, não a árvore semântica do documento. A impressora virtual não pode prometer recuperar formatação que não está presente no trabalho recebido. Em macOS/Linux, a integração provavelmente usará CUPS e um aplicativo auxiliar para abrir a caixa de salvamento no contexto da sessão do usuário; no Windows, será necessário usar a arquitetura de impressora virtual suportada pela plataforma.
+The repository is still validating packaging and registration on each platform. Current prototypes are not stable installers.
+
+## Privacy
+
+Jobs are processed locally. Never execute extracted content. Adapters must validate formats and sizes and must not log document contents.
