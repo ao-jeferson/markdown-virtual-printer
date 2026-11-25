@@ -32,4 +32,4 @@ jobs:
         shell: pwsh
         run: |
           cargo build --release -p printer-core --lib
-          msbuild platforms/windows/MarkdownVirtualPrinter.csproj /restore /p:Configuration=Release /p:Platform=x64 /p:AppxPackageSigningEnabled=false /p:UapAppxPackageBuildMode=Sideload
+          msbuild platforms/windows/MarkdownVirtualPrinter.csproj /restore /p:Configuration=Release /p:Platform=x64 /p:OutputPath=bin\Release\x64\ /p:AppxPackageSigningEnabled=false /p:UapAppxPackageBuildMode=Sideload
