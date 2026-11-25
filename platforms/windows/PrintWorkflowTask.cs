@@ -32,22 +32,24 @@ namespace MarkdownVirtualPrinter
                 if (!string.Equals(args.SourceContent.ContentType, "application/oxps", StringComparison.OrdinalIgnoreCase))
                     throw new InvalidDataException("Expected an OXPS print job.");
 
-                var pdf = new InMemoryRandomAccessStream();
-                var converter = args.GetPdlConverter(PrintWorkflowPdlConversionType.XpsToPdf);
-                await converter.ConvertPdlAsync(args.GetJobPrintTicket(), args.SourceContent.GetInputStream(), pdf);
-                if (pdf.Size == 0 || pdf.Size > 256UL * 1024 * 1024)
-                    throw new InvalidDataException("The print job is empty or exceeds the size limit.");
-
-                pdf.Seek(0);
-                using (var reader = new DataReader(pdf.GetInputStreamAt(0)))
+                using (var pdf = new InMemoryRandomAccessStream())
                 {
-                    await reader.LoadAsync((uint)pdf.Size);
-                    var input = new byte[(int)pdf.Size];
-                    reader.ReadBytes(input);
-                    var mode = KeepFormatting(args) ? 0U : 1U;
-                    var markdown = ConvertJob(input, mode);
-                    var target = await args.GetTargetFileAsync();
-                    await FileIO.WriteBytesAsync(target, markdown);
+                    var converter = args.GetPdlConverter(PrintWorkflowPdlConversionType.XpsToPdf);
+                    await converter.ConvertPdlAsync(args.GetJobPrintTicket(), args.SourceContent.GetInputStream(), pdf);
+                    if (pdf.Size == 0 || pdf.Size > 256UL * 1024 * 1024)
+                        throw new InvalidDataException("The print job is empty or exceeds the size limit.");
+
+                    pdf.Seek(0);
+                    using (var reader = new DataReader(pdf.GetInputStreamAt(0)))
+                    {
+                        await reader.LoadAsync((uint)pdf.Size);
+                        var input = new byte[(int)pdf.Size];
+                        reader.ReadBytes(input);
+                        var mode = KeepFormatting(args) ? 0U : 1U;
+                        var markdown = ConvertJob(input, mode);
+                        var target = await args.GetTargetFileAsync();
+                        await FileIO.WriteBytesAsync(target, markdown);
+                    }
                 }
                 status = PrintWorkflowSubmittedStatus.Succeeded;
             }
