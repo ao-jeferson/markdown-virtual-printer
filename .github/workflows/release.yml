@@ -33,6 +33,8 @@ jobs:
       - if: matrix.features == ''
         run: cargo build --release -p printer-core --lib
       - if: runner.os == 'Windows'
+        uses: microsoft/setup-msbuild@v2
+      - if: runner.os == 'Windows'
         shell: pwsh
         run: |
           msbuild platforms/windows/MarkdownVirtualPrinter.csproj /restore /p:Configuration=Release /p:Platform=x64 /p:AppxPackageSigningEnabled=false /p:UapAppxPackageBuildMode=Sideload
