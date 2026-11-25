@@ -105,7 +105,7 @@ namespace MarkdownVirtualPrinter
                     var written = MdvpConvertJob(inputPin.AddrOfPinnedObject(), new UIntPtr((uint)input.Length),
                         mimePin.AddrOfPinnedObject(), new UIntPtr((uint)mime.Length),
                         titlePin.AddrOfPinnedObject(), new UIntPtr((uint)title.Length), mode, output, new UIntPtr((ulong)length));
-                    if (written.ToUInt64() != (ulong)length) throw new InvalidDataException("Markdown generation returned an invalid length.");
+                    if (written != length) throw new InvalidDataException("Markdown generation returned an invalid length.");
                     var result = new byte[(int)length];
                     Marshal.Copy(output, result, 0, result.Length);
                     return result;
