@@ -19,7 +19,7 @@ jobs:
           - os: macos-latest
             platform: macos-arm64
             features: desktop-ui,unix-printer
-          - os: windows-latest
+          - os: windows-2022
             platform: windows-x86_64
             features: ''
     runs-on: ${{ matrix.os }}
