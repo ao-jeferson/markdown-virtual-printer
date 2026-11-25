@@ -2,22 +2,26 @@
 
 **Print to Markdown from the native print dialog.**
 
-An open source virtual printer designed to appear alongside physical printers in the operating system print dialog. Applications submit print jobs through the native system pipeline; the printer prepares a Markdown document and lets the user save it.
+An open source virtual printer designed to appear alongside physical printers in the operating system print dialog. Applications submit print jobs through the native system pipeline; the printer prepares a Markdown document and opens the system save dialog.
 
 Development order: macOS, Windows, Linux. Android and iOS are roadmap items without target dates.
 
-This project is in early development. The shared Rust core defines the document model and Markdown output boundary. Native printer integration, interface, and installer are implemented per operating system. The product is the virtual printer; the core is not a standalone converter application.
+The shared Rust core reads the document delivered by the print system and generates Markdown. The **Keep formatting** checkbox is enabled by default and structures readable text as a report; when unchecked, extracted text is kept as Markdown source. Print pipelines may flatten document semantics, so exact visual fidelity cannot always be reconstructed from a print job.
 
 ## Architecture
 
-- Shared Rust core: print-job document model and Markdown serialization.
-- Native OS adapter: registers and handles the printer through the system print pipeline.
-- Native UI and installer: use platform conventions for save flow and installation.
+- Shared Rust core: reads text and PDF print jobs and generates Markdown.
+- Native OS adapter: registers and handles the virtual printer through the system print pipeline.
+- Native UI: presents the platform save dialog and formatting option.
+
+## Development status
+
+The Rust core and a CUPS backend prototype are under active development. Platform installers are not yet a stable release. See [ROADMAP.md](ROADMAP.md) for platform status.
 
 ## Community
 
 Contributions are welcome through pull requests. See [CONTRIBUTING.md](CONTRIBUTING.md), [ROADMAP.md](ROADMAP.md), and [docs/BRANCHING.md](docs/BRANCHING.md).
 
-[Português (Brasil)](README.pt-BR.md) · [Architecture](docs/ARCHITECTURE.md) · [Release process](docs/RELEASING.md)
+[Português (Brasil)](README.pt-BR.md) · [Architecture](docs/architecture.md) · [Release process](docs/releases.md)
 
 MIT License. See [LICENSE](LICENSE).

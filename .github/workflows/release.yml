@@ -2,23 +2,61 @@ name: Build release artifacts
 
 on:
   push:
-    tags:
-      - 'v*.*.*'
+    tags: ['v*.*.*']
 
 permissions:
   contents: write
 
 jobs:
-  release:
-    runs-on: ubuntu-latest
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            platform: linux-x86_64
+            features: desktop-ui,unix-printer
+          - os: macos-latest
+            platform: macos-arm64
+            features: desktop-ui,unix-printer
+          - os: windows-latest
+            platform: windows-x86_64
+            features: ''
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: dtolnay/rust-toolchain@stable
+      - if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev
+      - if: matrix.features != ''
+        run: cargo build --release -p printer-core --features ${{ matrix.features }} --lib --bins
+      - if: matrix.features == ''
+        run: cargo build --release -p printer-core --lib
+      - if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          msbuild platforms/windows/MarkdownVirtualPrinter.csproj /restore /p:Configuration=Release /p:Platform=x64 /p:AppxPackageSigningEnabled=false /p:UapAppxPackageBuildMode=Sideload
+          Compress-Archive target/release/printer_core.dll mdvp-${{ matrix.platform }}-core.zip
+      - if: runner.os == 'Linux'
+        run: |
+          tar -czf mdvp-${{ matrix.platform }}.tar.gz \
+            target/release/libprinter_core.so target/release/libprinter_core.rlib \
+            target/release/mdvp-agent target/release/mdvp-cups-backend \
+            packaging/linux/install.sh packaging/cups/MarkdownVirtualPrinter.ppd
+      - if: runner.os == 'macOS'
+        run: tar -czf mdvp-${{ matrix.platform }}.tar.gz target/release/libprinter_core.dylib target/release/libprinter_core.rlib target/release/mdvp-agent target/release/mdvp-cups-backend
+      - uses: actions/upload-artifact@v4
         with:
-          python-version: '3.x'
-      - run: python -m pip install --upgrade build
-      - run: python -m build
-      - name: Create GitHub release with build artifacts
-        env:
+          name: mdvp-${{ matrix.platform }}
+          path: mdvp-${{ matrix.platform }}.*
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+      - env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "$GITHUB_REF_NAME" --generate-notes dist/*
+        run: gh release create "$GITHUB_REF_NAME" --draft --prerelease --generate-notes dist/*

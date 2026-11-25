@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<psf:PrintDeviceResources xmlns:psf="http://schemas.microsoft.com/windows/2003/08/printing/printschemaframework"
+  xmlns:mdvp="https://ao-jeferson.github.io/markdown-virtual-printer/print-schema">
+  <psf:Feature name="mdvp:KeepFormatting">
+    <psf:Property name="psf:DisplayName"><psf:Value>Keep formatting</psf:Value></psf:Property>
+    <psf:Option name="mdvp:On"><psf:Property name="psf:DisplayName"><psf:Value>On</psf:Value></psf:Property></psf:Option>
+    <psf:Option name="mdvp:Off"><psf:Property name="psf:DisplayName"><psf:Value>Off</psf:Value></psf:Property></psf:Option>
+  </psf:Feature>
+</psf:PrintDeviceResources>
