@@ -100,8 +100,44 @@ jobs:
         with:
           name: mdvp-${{ matrix.platform }}
           path: mdvp-${{ matrix.platform }}.*
+  build-android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
+      - name: Install Android SDK and NDK
+        run: sdkmanager "platforms;android-36" "build-tools;35.0.0" "ndk;27.0.12077973" "cmake;3.22.1"
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-linux-android,x86_64-linux-android
+      - name: Install cargo-ndk
+        run: cargo install cargo-ndk --locked
+      - name: Build Rust core for Android
+        working-directory: platforms/android
+        run: |
+          export ANDROID_NDK_HOME="$ANDROID_HOME/ndk/27.0.12077973"
+          cargo ndk -t arm64-v8a -t x86_64 -o app/src/main/jniLibs build \
+            --manifest-path ../../Cargo.toml --release -p printer-core --lib
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.13'
+      - name: Build installable APK
+        working-directory: platforms/android
+        run: gradle --no-daemon assembleDebug
+      - name: Name release APK
+        run: cp platforms/android/app/build/outputs/apk/debug/app-debug.apk "markdown-virtual-printer-android-${GITHUB_REF_NAME}-debug.apk"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mdvp-android
+          path: markdown-virtual-printer-android-*.apk
   publish:
-    needs: build
+    needs: [build, build-android]
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     steps:
@@ -112,4 +148,4 @@ jobs:
           merge-multiple: true
       - env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "$GITHUB_REF_NAME" --generate-notes dist/*
+        run: gh release create "$GITHUB_REF_NAME" --notes-file "docs/releases/${GITHUB_REF_NAME}.md" dist/*
