@@ -37,18 +37,45 @@ jobs:
       - if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          msbuild platforms/windows/MarkdownVirtualPrinter.csproj /restore /p:Configuration=Release /p:Platform=x64 /p:OutputPath=bin\Release\x64\ /p:RuntimeIdentifiers=win10 /p:AppxPackageSigningEnabled=false /p:UapAppxPackageBuildMode=Sideload /p:AppxPackage=false /p:GenerateAppxPackageOnBuild=false
-          New-Item -ItemType Directory -Force -Path dist | Out-Null
-          Copy-Item target/release/printer_core.dll platforms/windows/bin/Release/x64/printer_core.dll
-          Compress-Archive -Path platforms/windows/bin/Release/x64/* -DestinationPath mdvp-${{ matrix.platform }}.zip -Force
+          $passwordText = [guid]::NewGuid().ToString('N')
+          $password = ConvertTo-SecureString -String $passwordText -AsPlainText -Force
+          $certificate = New-SelfSignedCertificate -Type CodeSigningCert -Subject 'CN=Markdown Virtual Printer' -KeyUsage DigitalSignature -FriendlyName 'Markdown Virtual Printer release signing' -CertStoreLocation 'Cert:\CurrentUser\My'
+          $pfx = Join-Path $env:RUNNER_TEMP 'mdvp-signing.pfx'
+          Export-PfxCertificate -Cert $certificate -FilePath $pfx -Password $password | Out-Null
+          $cer = Join-Path $env:RUNNER_TEMP 'mdvp-publisher.cer'
+          Export-Certificate -Cert $certificate -FilePath $cer | Out-Null
+          msbuild platforms/windows/MarkdownVirtualPrinter.csproj /restore /p:Configuration=Release /p:Platform=x64 /p:OutputPath=bin\Release\x64\ /p:RuntimeIdentifiers=win10 /p:AppxPackageSigningEnabled=true /p:UapAppxPackageBuildMode=Sideload /p:GenerateAppxPackageOnBuild=true /p:PackageCertificateKeyFile="$pfx" /p:PackageCertificatePassword=$passwordText /p:PackageCertificateThumbprint=$($certificate.Thumbprint) /p:_NetCoreFrameworkInjectionNeeded=false
+          $package = Get-ChildItem platforms/windows -Recurse -Filter '*.msix' | Select-Object -First 1
+          if (-not $package) { throw 'MSBuild did not produce an MSIX package.' }
+          New-Item -ItemType Directory -Force -Path package | Out-Null
+          Copy-Item $package.FullName package/MarkdownVirtualPrinter.msix
+          Copy-Item $cer package/MarkdownVirtualPrinter.cer
+          Copy-Item platforms/windows/Package.appxmanifest package/AppxManifest.xml
+          Copy-Item packaging/windows/Install-MarkdownVirtualPrinter.ps1 package/Install-MarkdownVirtualPrinter.ps1
+          Compress-Archive -Path package/* -DestinationPath mdvp-${{ matrix.platform }}.zip -Force
       - if: runner.os == 'Linux'
         run: |
+          mkdir -p package-root
+          cp target/release/libprinter_core.so package-root/
+          cp target/release/mdvp-agent package-root/
+          cp target/release/mdvp-cups-backend package-root/
+          cp packaging/cups/MarkdownVirtualPrinter.ppd package-root/
+          bash packaging/linux/build-deb.sh "$GITHUB_REF_NAME" "$PWD/package-root"
           tar -czf mdvp-${{ matrix.platform }}.tar.gz \
             target/release/libprinter_core.so target/release/libprinter_core.rlib \
             target/release/mdvp-agent target/release/mdvp-cups-backend \
             packaging/linux/install.sh packaging/cups/MarkdownVirtualPrinter.ppd
+          mv package-root/out/*.deb .
       - if: runner.os == 'macOS'
-        run: tar -czf mdvp-${{ matrix.platform }}.tar.gz target/release/libprinter_core.dylib target/release/libprinter_core.rlib target/release/mdvp-agent target/release/mdvp-cups-backend
+        run: |
+          mkdir -p package-root
+          cp target/release/libprinter_core.dylib package-root/
+          cp target/release/mdvp-agent package-root/
+          cp target/release/mdvp-cups-backend package-root/
+          cp packaging/cups/MarkdownVirtualPrinter.ppd package-root/
+          bash packaging/macos/build-pkg.sh "$GITHUB_REF_NAME" "$PWD/package-root"
+          mv package-root/out/*.pkg .
+          tar -czf mdvp-${{ matrix.platform }}.tar.gz target/release/libprinter_core.dylib target/release/libprinter_core.rlib target/release/mdvp-agent target/release/mdvp-cups-backend
       - uses: actions/upload-artifact@v4
         with:
           name: mdvp-${{ matrix.platform }}
@@ -57,6 +84,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
           path: dist
