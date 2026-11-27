@@ -3,7 +3,9 @@ name: Build release artifacts
 on:
   pull_request:
   push:
+    branches: [main]
     tags: ['v*.*.*']
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -70,7 +72,7 @@ jobs:
       - if: runner.os == 'Linux'
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
-          [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || VERSION=0.0.0
+          [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || VERSION="$(sed -n 's/^version = "\(.*\)"/\1/p' crates/printer-core/Cargo.toml | head -n1)"
           mkdir -p package-root
           cp target/release/libprinter_core.so package-root/
           cp target/release/mdvp-agent package-root/
@@ -81,18 +83,18 @@ jobs:
             target/release/libprinter_core.so target/release/libprinter_core.rlib \
             target/release/mdvp-agent target/release/mdvp-cups-backend \
             packaging/linux/install.sh packaging/cups/MarkdownVirtualPrinter.ppd
-          mv package-root/out/*.deb .
+          mv package-root/out/*.deb mdvp-${{ matrix.platform }}.deb
       - if: runner.os == 'macOS'
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
-          [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || VERSION=0.0.0
+          [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || VERSION="$(sed -n 's/^version = "\(.*\)"/\1/p' crates/printer-core/Cargo.toml | head -n1)"
           mkdir -p package-root
           cp target/release/libprinter_core.dylib package-root/
           cp target/release/mdvp-agent package-root/
           cp target/release/mdvp-cups-backend package-root/
           cp packaging/cups/MarkdownVirtualPrinter.ppd package-root/
           bash packaging/macos/build-pkg.sh "v$VERSION" "$PWD/package-root"
-          mv package-root/out/*.pkg .
+          mv package-root/out/*.pkg mdvp-${{ matrix.platform }}.pkg
           tar -czf mdvp-${{ matrix.platform }}.tar.gz target/release/libprinter_core.dylib target/release/libprinter_core.rlib target/release/mdvp-agent target/release/mdvp-cups-backend
       - uses: actions/upload-artifact@v4
         with:
