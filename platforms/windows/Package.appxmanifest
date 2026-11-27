@@ -4,7 +4,7 @@
          xmlns:uap11="http://schemas.microsoft.com/appx/manifest/uap/windows10/11"
          xmlns:printSupport="http://schemas.microsoft.com/appx/manifest/printsupport/windows10/2"
          IgnorableNamespaces="uap uap11 printSupport">
-  <Identity Name="AoJeferson.MarkdownVirtualPrinter" Publisher="CN=Markdown Virtual Printer" Version="0.1.0.0" />
+  <Identity Name="AoJeferson.MarkdownVirtualPrinter" Publisher="CN=Markdown Virtual Printer" Version="0.1.1.0" />
   <Properties>
     <DisplayName>Markdown Virtual Printer</DisplayName>
     <PublisherDisplayName>Markdown Virtual Printer contributors</PublisherDisplayName>
