@@ -2,7 +2,7 @@
     <string name="app_name">Markdown Virtual Printer</string>
     <string name="print_service_description">Save a print job as a Markdown file</string>
     <string name="home_title">Print to Markdown</string>
-    <string name="home_instructions">Enable this print service in Android Settings. Then choose Markdown Virtual Printer from any app's Print menu.</string>
+    <string name="home_instructions">Enable this print service in Android Settings. Then select Markdown Virtual Printer from the Print menu in any app.</string>
     <string name="enable_printer">Open print settings</string>
     <string name="keep_formatting">Keep formatting</string>
     <string name="formatting_summary">On: organize extracted text as a report. Off: keep the Markdown source.</string>
