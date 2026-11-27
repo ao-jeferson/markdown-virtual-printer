@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
          xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+         xmlns:uap11="http://schemas.microsoft.com/appx/manifest/uap/windows10/11"
          xmlns:printSupport="http://schemas.microsoft.com/appx/manifest/printsupport/windows10/2"
-         IgnorableNamespaces="uap printSupport">
+         IgnorableNamespaces="uap uap11 printSupport">
   <Identity Name="AoJeferson.MarkdownVirtualPrinter" Publisher="CN=Markdown Virtual Printer" Version="0.1.0.0" />
   <Properties>
     <DisplayName>Markdown Virtual Printer</DisplayName>
@@ -17,7 +18,7 @@
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="MarkdownVirtualPrinter.App">
       <uap:VisualElements DisplayName="Markdown Virtual Printer" Description="Print documents to Markdown" BackgroundColor="transparent" Square150x150Logo="Assets\Square150x150Logo.png" Square44x44Logo="Assets\Square44x44Logo.png" />
       <Extensions>
-        <printSupport:Extension Category="windows.printSupportVirtualPrinterWorkflow" EntryPoint="MarkdownVirtualPrinter.PrintWorkflowTask" SupportsMultipleInstances="true">
+        <printSupport:Extension Category="windows.printSupportVirtualPrinterWorkflow" EntryPoint="MarkdownVirtualPrinter.PrintWorkflowTask" uap11:SupportsMultipleInstances="true">
           <printSupport:PrintSupportVirtualPrinter DisplayName="Markdown Virtual Printer" PrinterUri="mdvp:markdown" PreferredInputFormat="application/oxps" OutputFileTypes="md" PdcFile="Config\PrintDeviceCapabilities.xml" PdrFile="Config\PrintDeviceResources.xml">
             <printSupport:SupportedFormats>
               <printSupport:SupportedFormat Type="application/oxps" />
