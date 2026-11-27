@@ -37,8 +37,10 @@ jobs:
       - if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          msbuild platforms/windows/MarkdownVirtualPrinter.csproj /restore /p:Configuration=Release /p:Platform=x64 /p:OutputPath=bin\Release\x64\ /p:RuntimeIdentifiers=win10 /p:AppxPackageSigningEnabled=false /p:UapAppxPackageBuildMode=Sideload
-          Compress-Archive target/release/printer_core.dll mdvp-${{ matrix.platform }}-core.zip
+          msbuild platforms/windows/MarkdownVirtualPrinter.csproj /restore /p:Configuration=Release /p:Platform=x64 /p:OutputPath=bin\Release\x64\ /p:RuntimeIdentifiers=win10 /p:AppxPackageSigningEnabled=false /p:UapAppxPackageBuildMode=Sideload /p:AppxPackage=false /p:GenerateAppxPackageOnBuild=false
+          New-Item -ItemType Directory -Force -Path dist | Out-Null
+          Copy-Item target/release/printer_core.dll platforms/windows/bin/Release/x64/printer_core.dll
+          Compress-Archive -Path platforms/windows/bin/Release/x64/* -DestinationPath mdvp-${{ matrix.platform }}.zip -Force
       - if: runner.os == 'Linux'
         run: |
           tar -czf mdvp-${{ matrix.platform }}.tar.gz \
@@ -61,4 +63,4 @@ jobs:
           merge-multiple: true
       - env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "$GITHUB_REF_NAME" --draft --prerelease --generate-notes dist/*
+        run: gh release create "$GITHUB_REF_NAME" --generate-notes dist/*
