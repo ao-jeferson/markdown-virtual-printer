@@ -45,23 +45,36 @@ jobs:
           Export-PfxCertificate -Cert $certificate -FilePath $pfx -Password $password | Out-Null
           $cer = Join-Path $env:RUNNER_TEMP 'mdvp-publisher.cer'
           Export-Certificate -Cert $certificate -FilePath $cer | Out-Null
-          msbuild platforms/windows/MarkdownVirtualPrinter.csproj /restore /p:Configuration=Release /p:Platform=x64 /p:OutputPath=bin\Release\x64\ /p:RuntimeIdentifiers=win10 /p:AppxPackageSigningEnabled=true /p:UapAppxPackageBuildMode=Sideload /p:GenerateAppxPackageOnBuild=true /p:PackageCertificateKeyFile="$pfx" /p:PackageCertificatePassword=$passwordText /p:PackageCertificateThumbprint=$($certificate.Thumbprint) /p:_NetCoreFrameworkInjectionNeeded=false
-          $package = Get-ChildItem platforms/windows -Recurse -Filter '*.msix' | Select-Object -First 1
-          if (-not $package) { throw 'MSBuild did not produce an MSIX package.' }
+          msbuild platforms/windows/MarkdownVirtualPrinter.csproj /restore /p:Configuration=Release /p:Platform=x64 /p:OutputPath=bin\Release\x64\ /p:RuntimeIdentifiers=win10 /p:AppxPackageSigningEnabled=false /p:AppxPackage=false /p:GenerateAppxPackageOnBuild=false
+          $stage = Join-Path $env:RUNNER_TEMP 'mdvp-msix'
+          New-Item -ItemType Directory -Force -Path $stage | Out-Null
+          Copy-Item platforms/windows/bin/Release/x64/* $stage -Recurse -Force
+          Copy-Item platforms/windows/Assets $stage -Recurse -Force
+          Copy-Item platforms/windows/Config $stage -Recurse -Force
+          Copy-Item platforms/windows/Package.appxmanifest (Join-Path $stage 'AppxManifest.xml')
+          $makeAppx = Get-ChildItem "${env:ProgramFiles(x86)}\Windows Kits\10\bin" -Filter MakeAppx.exe -Recurse | Sort-Object FullName -Descending | Select-Object -First 1
+          if (-not $makeAppx) { throw 'Windows SDK MakeAppx.exe was not found.' }
+          $signtool = Join-Path $makeAppx.DirectoryName 'signtool.exe'
+          if (-not (Test-Path -LiteralPath $signtool)) { throw 'Windows SDK signtool.exe was not found.' }
           New-Item -ItemType Directory -Force -Path package | Out-Null
-          Copy-Item $package.FullName package/MarkdownVirtualPrinter.msix
+          & $makeAppx.FullName pack /d $stage /p package/MarkdownVirtualPrinter.msix /o
+          if ($LASTEXITCODE -ne 0) { throw 'MakeAppx failed to create the MSIX package.' }
+          & $signtool sign /fd SHA256 /f $pfx /p $passwordText package/MarkdownVirtualPrinter.msix
+          if ($LASTEXITCODE -ne 0) { throw 'SignTool failed to sign the MSIX package.' }
           Copy-Item $cer package/MarkdownVirtualPrinter.cer
           Copy-Item platforms/windows/Package.appxmanifest package/AppxManifest.xml
           Copy-Item packaging/windows/Install-MarkdownVirtualPrinter.ps1 package/Install-MarkdownVirtualPrinter.ps1
           Compress-Archive -Path package/* -DestinationPath mdvp-${{ matrix.platform }}.zip -Force
       - if: runner.os == 'Linux'
         run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || VERSION=0.0.0
           mkdir -p package-root
           cp target/release/libprinter_core.so package-root/
           cp target/release/mdvp-agent package-root/
           cp target/release/mdvp-cups-backend package-root/
           cp packaging/cups/MarkdownVirtualPrinter.ppd package-root/
-          bash packaging/linux/build-deb.sh "$GITHUB_REF_NAME" "$PWD/package-root"
+          bash packaging/linux/build-deb.sh "$VERSION" "$PWD/package-root"
           tar -czf mdvp-${{ matrix.platform }}.tar.gz \
             target/release/libprinter_core.so target/release/libprinter_core.rlib \
             target/release/mdvp-agent target/release/mdvp-cups-backend \
@@ -69,12 +82,14 @@ jobs:
           mv package-root/out/*.deb .
       - if: runner.os == 'macOS'
         run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || VERSION=0.0.0
           mkdir -p package-root
           cp target/release/libprinter_core.dylib package-root/
           cp target/release/mdvp-agent package-root/
           cp target/release/mdvp-cups-backend package-root/
           cp packaging/cups/MarkdownVirtualPrinter.ppd package-root/
-          bash packaging/macos/build-pkg.sh "$GITHUB_REF_NAME" "$PWD/package-root"
+          bash packaging/macos/build-pkg.sh "v$VERSION" "$PWD/package-root"
           mv package-root/out/*.pkg .
           tar -czf mdvp-${{ matrix.platform }}.tar.gz target/release/libprinter_core.dylib target/release/libprinter_core.rlib target/release/mdvp-agent target/release/mdvp-cups-backend
       - uses: actions/upload-artifact@v4
