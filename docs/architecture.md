@@ -16,6 +16,7 @@ The native **Keep formatting** checkbox is enabled by default. Checked, the core
 
 - macOS and Linux: CUPS receives print jobs. A per-user helper is needed for the native save dialog because CUPS backends run outside the logged-in desktop session.
 - Windows: the supported direction is a Print Support virtual printer packaged as MSIX; its workflow must call the Rust core and use the OS save destination.
+- Android: a native `PrintService` receives the system-spooled PDF. The user chooses the `.md` destination through Android's Storage Access Framework after tapping a notification; Rust conversion runs in-process through JNI.
 
 The repository is still validating packaging and registration on each platform. Current prototypes are not stable installers.
 

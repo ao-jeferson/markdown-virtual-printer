@@ -8,3 +8,8 @@ platforms/windows/bin/
 platforms/windows/obj/
 platforms/windows/AppPackages/
 platforms/windows/Packages/
+.gradle/
+local.properties
+platforms/android/.gradle/
+platforms/android/app/build/
+platforms/android/app/src/main/jniLibs/**/*.so

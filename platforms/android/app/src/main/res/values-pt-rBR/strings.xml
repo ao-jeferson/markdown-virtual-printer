@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Impressora Virtual Markdown</string>
+    <string name="print_service_description">Salvar um trabalho de impressão como arquivo Markdown</string>
+    <string name="home_title">Imprimir em Markdown</string>
+    <string name="home_instructions">Ative este serviço de impressão nas Configurações do Android. Depois escolha Impressora Virtual Markdown no menu Imprimir de qualquer aplicativo.</string>
+    <string name="enable_printer">Abrir configurações de impressão</string>
+    <string name="keep_formatting">Manter formatação</string>
+    <string name="formatting_summary">Ativado: organizar o texto extraído como relatório. Desativado: manter o código-fonte Markdown.</string>
+    <string name="notifications_required">Permita notificações para abrir a janela de salvamento quando o trabalho de impressão estiver pronto.</string>
+    <string name="notification_title">Arquivo Markdown pronto</string>
+    <string name="notification_body">Toque para escolher onde salvar o arquivo.</string>
+    <string name="save_title">Salvar arquivo Markdown</string>
+    <string name="save_cancelled">O salvamento foi cancelado.</string>
+    <string name="save_failed">Não foi possível salvar o arquivo Markdown.</string>
+    <string name="job_failed">Não foi possível converter este trabalho de impressão.</string>
+    <string name="job_too_large">Este trabalho de impressão excede o limite de 64 MiB do Android.</string>
+</resources>

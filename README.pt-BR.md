@@ -4,7 +4,7 @@
 
 Uma impressora virtual livre, feita para aparecer junto às impressoras físicas no diálogo do sistema. Os aplicativos enviam trabalhos pelo fluxo nativo de impressão; a impressora gera um documento Markdown e abre a janela do sistema para salvá-lo.
 
-Ordem de desenvolvimento: macOS, Windows e Linux. Android e iOS estão no roadmap, sem previsão.
+Foco de desenvolvimento: macOS, Windows e Linux. Um protótipo experimental de serviço de impressão nativo para Android está sendo criado; iOS permanece no roadmap, sem previsão.
 
 O núcleo compartilhado em Rust lê o documento recebido pela fila de impressão e gera Markdown. A caixa **Manter formatação**, marcada por padrão, organiza o texto legível como relatório; desmarcada, mantém o texto extraído como código-fonte Markdown. A fila pode achatar a semântica do documento, então nem sempre é possível reconstruir a aparência visual exata.
 
@@ -15,3 +15,5 @@ O núcleo Rust e um protótipo de backend CUPS estão em desenvolvimento. Os ins
 Contribuições: pull requests são bem-vindos. Consulte [CONTRIBUTING.md](CONTRIBUTING.md), [ROADMAP.md](ROADMAP.md) e [docs/BRANCHING.md](docs/BRANCHING.md).
 
 [English](README.md) · [Arquitetura](docs/architecture.md) · [Processo de releases](docs/releases.md) · Licença MIT.
+
+Instruções do protótipo Android: [platforms/android/README.md](platforms/android/README.md).

@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Markdown Virtual Printer</string>
+    <string name="print_service_description">Save a print job as a Markdown file</string>
+    <string name="home_title">Print to Markdown</string>
+    <string name="home_instructions">Enable this print service in Android Settings. Then choose Markdown Virtual Printer from any app's Print menu.</string>
+    <string name="enable_printer">Open print settings</string>
+    <string name="keep_formatting">Keep formatting</string>
+    <string name="formatting_summary">On: organize extracted text as a report. Off: keep the Markdown source.</string>
+    <string name="notifications_required">Allow notifications so Android can open the save picker after a print job is ready.</string>
+    <string name="notification_title">Markdown file ready</string>
+    <string name="notification_body">Tap to choose where to save the file.</string>
+    <string name="save_title">Save Markdown file</string>
+    <string name="save_cancelled">Save was cancelled.</string>
+    <string name="save_failed">Could not save the Markdown file.</string>
+    <string name="job_failed">Could not convert this print job.</string>
+    <string name="job_too_large">This print job exceeds the Android limit of 64 MiB.</string>
+</resources>
